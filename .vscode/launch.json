@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Qt App (no debugger)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/Debug/data-visualization.exe",
+      "cwd": "${workspaceFolder}/build/Debug",
+      "preLaunchTask": "build",
+      "noDebug": true,
+      "env": {
+        "PATH": "C:/Qt/6.10.0/msvc2022_64/bin;${env:PATH}",
+        "QT_PLUGIN_PATH": "C:/Qt/6.10.0/msvc2022_64/plugins",
+        "QT_DEBUG_PLUGINS": "1"
+      }
+    }
+  ]
+}
