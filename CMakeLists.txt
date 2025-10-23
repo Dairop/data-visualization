@@ -1,29 +1,14 @@
 cmake_minimum_required(VERSION 3.16)
-project(data-visualization VERSION 0.1 LANGUAGES CXX)
+project(data-visualization LANGUAGES CXX)
+
+set(CMAKE_PREFIX_PATH "C:/Qt/6.10.0/msvc2022_64" CACHE PATH "Qt6 installation path")
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 
-# Qt path
-set(CMAKE_PREFIX_PATH "C:/Qt/6.10.0/msvc2022_64")
+# Make sure Qt6 is properly loaded here
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
-qt_standard_project_setup()
-
-qt_add_executable(data-visualization
-    main.cpp
-    mainwindow.cpp
-    mainwindow.h
-    mainwindow.ui
-)
-
-target_link_libraries(data-visualization PRIVATE Qt6::Widgets)
-
-set_target_properties(data-visualization PROPERTIES
-    WIN32_EXECUTABLE TRUE
-)
-
-include(GNUInstallDirs)
-install(TARGETS data-visualization
-    RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/bin
-)
+add_subdirectory(src)
