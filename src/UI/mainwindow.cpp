@@ -6,40 +6,31 @@
 #include <QVBoxLayout>
 #include <QFrame>
  
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow)
-{
+
+
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    setupContainers();
-}
 
-void MainWindow::setupContainers()
-{
-    QWidget *central = new QWidget(this);
-    QVBoxLayout *layout = new QVBoxLayout(central);
+    stackedWidget = new QStackedWidget();
+    setCentralWidget(stackedWidget);
 
-    QFrame *container1 = new QFrame();
-    container1->setFrameShape(QFrame::Box);
-    container1->setStyleSheet("background: white; padding: 10px;");
-    QLabel *label1 = new QLabel(Core::getText1());
-    QVBoxLayout *layout1 = new QVBoxLayout(container1);
-    layout1->addWidget(label1);
+    menuPage = new MenuPage(this);
+    //dataPage = new DataPage(this);
 
-    QFrame *container2 = new QFrame();
-    container2->setFrameShape(QFrame::Box);
-    container2->setStyleSheet("background: white; padding: 10px;");
-    QLabel *label2 = new QLabel(Core::getText2());
-    QVBoxLayout *layout2 = new QVBoxLayout(container2);
-    layout2->addWidget(label2);
 
-    layout->addWidget(container1);
-    layout->addWidget(container2);
+    stackedWidget->addWidget(menuPage);
+    //stackedWidget->addWidget(dataPage);
 
-    central->setStyleSheet("background-color: " + Theme::backgroundColor() + ";");
-    setCentralWidget(central);
+
+    //rajouter signaux (events)
+
+
+
+    stackedWidget->setCurrentWidget(menuPage);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    //delete dataPage;
 }

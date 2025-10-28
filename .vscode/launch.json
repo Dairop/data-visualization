@@ -10,7 +10,7 @@
       "preLaunchTask": "build",
       "noDebug": true,
       "env": {
-        "PATH": "C:/Qt/6.10.0/msvc2022_64/bin;${env:PATH}",
+        "PATH": "C:/Qt/6.10.0/msvc2022_64/bin;C:/Qt/6.10.0/msvc2022_64/plugins/platforms;${env:PATH}",
         "QT_PLUGIN_PATH": "C:/Qt/6.10.0/msvc2022_64/plugins",
         "QT_DEBUG_PLUGINS": "1"
       }

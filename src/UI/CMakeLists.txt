@@ -1,4 +1,6 @@
 add_library(UI
+    menuPage.cpp
+    menuPage.h
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
