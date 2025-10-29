@@ -2,15 +2,19 @@
 
 #include <QMainWindow>
 #include <qstackedwidget.h>
-#include "menuPage.h"
+
+#include "UiPages.h"
 
 namespace Ui {
     class MainWindow;
 }
 
+class MenuPage;
+class DataPage;
+class VisualizePage;
 
 class MainWindow : public QMainWindow {
-    Q_OBJECT
+    Q_OBJECT  //objet Qt, permet l'utilisation de slots par exemple
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -21,5 +25,12 @@ private:
     QStackedWidget *stackedWidget; //permet le passage d'une page à l'autre (chaque page est un widget)
 
     MenuPage *menuPage;
-    //DataPage *dataPaage;
+    DataPage *dataPage;
+    VisualizePage *visualizePage;
+
+signals:
+    void requestPageChange(UiPages p);
+
+public slots:
+    void switchToPage(UiPages p);
 };

@@ -3,12 +3,24 @@
 #include "core.h"         // from Core
 #include "theme.h"        // from Theme
 
+#include <QObject>
 
-class AppController {
+
+class AppController : public QObject {
+    Q_OBJECT
+
 public:
-    AppController();
+    AppController(QObject *parent = nullptr);
+    ~AppController();
+
     void run();
 
 private:
-    MainWindow mainWindow;
+    MainWindow *mainWindow;
+
+    std::string selectedDataset;
+
+
+public slots:
+    void onRequestPageChange(UiPages p);
 };

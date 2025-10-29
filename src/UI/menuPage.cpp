@@ -5,15 +5,20 @@ MenuPage::MenuPage(QWidget *parent) : QWidget(parent) {
     setLayout(layout);
 
     //contenu
-    QPushButton *boutonVisualiser = new QPushButton("Visualiser");
-    QPushButton *boutonDonnees = new QPushButton("Charger des données");
-    QPushButton *boutonQuitter = new QPushButton("Quitter");
+    QPushButton *vitualizeButton = new QPushButton("Visualize loaded data");
+    QPushButton *dataButton = new QPushButton("Load new data");
+    QPushButton *exitButton = new QPushButton("Exit");
 
-    boutonQuitter->setAccessibleName("bQuitter");
+    exitButton->setAccessibleName("bExit");
 
-    layout->addWidget(boutonVisualiser);
-    layout->addWidget(boutonDonnees);
-    layout->addWidget(boutonQuitter);
+    layout->addWidget(vitualizeButton);
+    layout->addWidget(dataButton);
+    layout->addWidget(exitButton);
+
+
+    connect(vitualizeButton, &QPushButton::clicked, this, &MenuPage::onVisualizeClicked);
+    connect(dataButton, &QPushButton::clicked, this, &MenuPage::onLoadDataClicked);
+    connect(exitButton, &QPushButton::clicked, this, exit);
 
 
     //variables generees avec https://mywebtools.biagi.org/colors/palette/ , placees
@@ -28,25 +33,29 @@ MenuPage::MenuPage(QWidget *parent) : QWidget(parent) {
     --dark: #05020D;
     */
 
-
     setStyleSheet(R"(
     QWidget {
         background-color: #2D1A66;
+        width: 100%;
     }
 
     QPushButton {
         background-color: #7D60D2;
         color: white;
         margin: 5px auto;
+        font-size: 16px;
+
+
         /* l'attribut width simple n'existe pas ??? */
         max-width: 75%;
         min-width: 400px;
+
         height: 4em;
+
         border-width: 3px;
         border-color: #7D60D2;
         border-radius: 5px;
         border-style: solid;
-        font-size: 16px;
     }
 
     QPushButton:hover {
@@ -56,13 +65,13 @@ MenuPage::MenuPage(QWidget *parent) : QWidget(parent) {
     }
 
 
-    QPushButton[accessibleName="bQuitter"] {
-        background-color: #BDB7CC;
+    QPushButton[accessibleName="bExit"] {
+        background-color: #F8F6FE;
         color: #2D1A66;
         /* max-width: 50px; */
     }
 
-    QPushButton[accessibleName="bQuitter"]:hover {
+    QPushButton[accessibleName="bExit"]:hover {
         background-color: #F8F6FE;
         color: #2D1A66;
         border-color: #2D1A66;
@@ -70,5 +79,14 @@ MenuPage::MenuPage(QWidget *parent) : QWidget(parent) {
 
     )");
 
+}
 
+
+
+void MenuPage::onVisualizeClicked() {
+    emit switchToPage(UiPages::visualize);
+}
+
+void MenuPage::onLoadDataClicked() {
+    emit switchToPage(UiPages::data);
 }
