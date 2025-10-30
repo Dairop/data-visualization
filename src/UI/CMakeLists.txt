@@ -15,11 +15,16 @@ add_library(UI
     mainwindow.ui
 )
 
+add_subdirectory(Graph)
+find_package(Qt6 REQUIRED COMPONENTS OpenGLWidgets)
+
 target_link_libraries(UI
     PUBLIC
         Qt6::Widgets
+        Qt6::OpenGLWidgets
         Core
         Theme
+        Graph
 )
 
 target_include_directories(UI

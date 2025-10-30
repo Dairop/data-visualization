@@ -7,6 +7,8 @@ void Dataset::loadFromFile(std::string path){
 
 
 void Dataset::generateDataset(int nNodes, int nEdges){
+    nodesNames.clear();
+    edges.clear();
     if (nNodes == 0) return;
 
     srand(time(nullptr));
@@ -19,7 +21,5 @@ void Dataset::generateDataset(int nNodes, int nEdges){
         int start = rand() % nNodes;
         int end = (double) start / (double) (1.0 + (rand()%100) / 10.0);
         edges.insert(std::pair<int, int>());
-
-        std::cout << start << " " << end << "\n";
     }
 }

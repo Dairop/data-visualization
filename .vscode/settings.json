@@ -87,6 +87,7 @@
         "qcoreapplication": "cpp",
         "qradiobutton": "cpp",
         "qscrollarea": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "qopenglfunctions": "cpp"
     }
 }

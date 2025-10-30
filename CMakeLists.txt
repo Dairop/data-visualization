@@ -8,7 +8,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-# Make sure Qt6 is properly loaded here
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
 add_subdirectory(src)

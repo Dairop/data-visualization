@@ -9,6 +9,10 @@ DataPage::DataPage(QWidget *parent) : QWidget(parent) {
    QVBoxLayout *layout = new QVBoxLayout();
    container->setLayout(layout);
 
+   layout->setSpacing(12);
+   layout->setContentsMargins(20, 20, 20, 20);
+   layout->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+
    QScrollArea *scrollArea = new QScrollArea(this);
    scrollArea->setWidgetResizable(true);
    scrollArea->setWidget(container);
@@ -19,6 +23,7 @@ DataPage::DataPage(QWidget *parent) : QWidget(parent) {
       std::string filePath = file.path().string();
       std::string displayName = filePath.substr(14, filePath.length() - 14);
       QRadioButton* choice = new QRadioButton(QString::fromStdString(displayName), this);
+      choice->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
       //possible de faire sans fonctions lambda ?
       //impossible de passer des parametres avec la version utilisant les signatures de fonctions
@@ -29,7 +34,9 @@ DataPage::DataPage(QWidget *parent) : QWidget(parent) {
 
    QRadioButton* choice = new QRadioButton("Generate new dataset", this);
    choice->setAccessibleName("generateButton");
-   layout->addWidget(choice);
+   choice->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+   layout->addWidget(choice);  
+
    connect(choice, &QRadioButton::clicked, this, [this]{ this->willGenerateNewDataset = true; });      
 
 
@@ -43,7 +50,9 @@ DataPage::DataPage(QWidget *parent) : QWidget(parent) {
    //connect(backToMenuButton, &QPushButton::clicked, this, &DataPage::onClickBackToMenuButton);
    connect(confirmButton, &QPushButton::clicked, this, &DataPage::onClickConfirmButton);
 
-
+   QVBoxLayout *mainLayout = new QVBoxLayout(this);
+   mainLayout->addWidget(scrollArea);
+   setLayout(mainLayout);
 
 
    setStyleSheet(R"(

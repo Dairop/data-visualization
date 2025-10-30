@@ -10,6 +10,8 @@ qt_add_executable(data-visualization
     main.cpp
 )
 
+find_package(Qt6 REQUIRED COMPONENTS OpenGLWidgets)
+
 # Lie les bibliothèques internes et Qt
 target_link_libraries(data-visualization PRIVATE
     AppController
@@ -17,6 +19,7 @@ target_link_libraries(data-visualization PRIVATE
     Theme
     UI
     Qt6::Widgets
+    Qt6::OpenGLWidgets
 )
 
 # Configuration pour Windows
