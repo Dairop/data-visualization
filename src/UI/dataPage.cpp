@@ -22,7 +22,7 @@ DataPage::DataPage(QWidget *parent) : QWidget(parent) {
 
       //possible de faire sans fonctions lambda ?
       //impossible de passer des parametres avec la version utilisant les signatures de fonctions
-      connect(choice, &QRadioButton::clicked, this, [filePath, this]{ this->pathOfLocalSelectedFile = filePath; this->willGenerateNewDataset = false;});      
+      connect(choice, &QRadioButton::clicked, this, [file, this]{ this->pathOfLocalSelectedFile = file.path(); this->willGenerateNewDataset = false;});      
 
       layout->addWidget(choice);
    }
@@ -33,14 +33,14 @@ DataPage::DataPage(QWidget *parent) : QWidget(parent) {
    connect(choice, &QRadioButton::clicked, this, [this]{ this->willGenerateNewDataset = true; });      
 
 
-   QPushButton *backToMenuButton = new QPushButton("Back to menu");
+   //QPushButton *backToMenuButton = new QPushButton("Back to menu");
    QPushButton *confirmButton = new QPushButton("Confirm choice");
 
-   layout->addWidget(backToMenuButton);
+   //layout->addWidget(backToMenuButton);
    layout->addWidget(confirmButton);
 
 
-   connect(backToMenuButton, &QPushButton::clicked, this, &DataPage::onClickBackToMenuButton);
+   //connect(backToMenuButton, &QPushButton::clicked, this, &DataPage::onClickBackToMenuButton);
    connect(confirmButton, &QPushButton::clicked, this, &DataPage::onClickConfirmButton);
 
 

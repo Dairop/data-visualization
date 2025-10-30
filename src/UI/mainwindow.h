@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <qstackedwidget.h>
 
+#include <filesystem>
 #include "UiPages.h"
 
 namespace Ui {
@@ -30,7 +31,7 @@ private:
 
 signals:
     void requestPageChange(UiPages p);
-    void confirmNewDatasetFileSelected(std::string path);
+    void confirmNewDatasetFileSelected(std::filesystem::path path);
     void generateNewDataset(int nodes, int edges);
 
 public slots:

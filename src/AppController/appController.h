@@ -1,6 +1,7 @@
 #pragma once
 #include "mainwindow.h"
-#include "core.h"        
+#include "core.h"    
+#include <filesystem>    
 
 #include <QObject>
 
@@ -18,11 +19,13 @@ private:
     Core *core;
     MainWindow *mainWindow;
 
-    std::string selectedDataset;
+    std::filesystem::path selectedDataset;
 
 
 public slots:
     void onRequestPageChange(UiPages p);
-    void onConfirmNewDatasetFileSelected(std::string path);
+    void onConfirmNewDatasetFileSelected(std::filesystem::path path);
     void onGenerateNewDataset(int nodes, int edges);
+    void onDatasetLoaded();
+    
 };
