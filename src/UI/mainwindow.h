@@ -30,6 +30,8 @@ private:
 
 signals:
     void requestPageChange(UiPages p);
+    void confirmNewDatasetFileSelected(std::string path);
+    void generateNewDataset(int nodes, int edges);
 
 public slots:
     void switchToPage(UiPages p);

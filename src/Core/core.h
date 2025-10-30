@@ -1,8 +1,20 @@
 #pragma once
 #include <QString>
+#include <dataset.h>
 
 class Core {
 public:
-    static QString getText1() { return "Hello from Core!"; }
-    static QString getText2() { return "Data visualization starts here."; }
+    Core(){
+        datasetPath = "";
+    }
+
+
+    void setNewDatasetPath(std::string path);
+    void generateNewDataset(int nodes, int edges);
+
+private:
+    std::string datasetPath;
+    Dataset dataset;
+    
+
 };

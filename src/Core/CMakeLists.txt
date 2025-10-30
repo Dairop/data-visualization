@@ -1,4 +1,6 @@
 add_library(Core
+    dataset.h
+
     core.cpp
     core.h
 )

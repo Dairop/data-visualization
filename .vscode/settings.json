@@ -86,6 +86,7 @@
         "xutility": "cpp",
         "qcoreapplication": "cpp",
         "qradiobutton": "cpp",
-        "qscrollarea": "cpp"
+        "qscrollarea": "cpp",
+        "random": "cpp"
     }
 }

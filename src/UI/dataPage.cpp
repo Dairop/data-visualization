@@ -1,6 +1,9 @@
 #include "dataPage.h"
 
 DataPage::DataPage(QWidget *parent) : QWidget(parent) {
+   pathOfLocalSelectedFile = "";
+   willGenerateNewDataset = false;
+   
    QWidget *container = new QWidget(); // permet le scroll area
 
    QVBoxLayout *layout = new QVBoxLayout();
@@ -16,13 +19,19 @@ DataPage::DataPage(QWidget *parent) : QWidget(parent) {
       std::string filePath = file.path().string();
       std::string displayName = filePath.substr(14, filePath.length() - 14);
       QRadioButton* choice = new QRadioButton(QString::fromStdString(displayName), this);
-      
+
+      //possible de faire sans fonctions lambda ?
+      //impossible de passer des parametres avec la version utilisant les signatures de fonctions
+      connect(choice, &QRadioButton::clicked, this, [filePath, this]{ this->pathOfLocalSelectedFile = filePath; this->willGenerateNewDataset = false;});      
+
       layout->addWidget(choice);
    }
 
    QRadioButton* choice = new QRadioButton("Generate new dataset", this);
    choice->setAccessibleName("generateButton");
    layout->addWidget(choice);
+   connect(choice, &QRadioButton::clicked, this, [this]{ this->willGenerateNewDataset = true; });      
+
 
    QPushButton *backToMenuButton = new QPushButton("Back to menu");
    QPushButton *confirmButton = new QPushButton("Confirm choice");
@@ -30,6 +39,9 @@ DataPage::DataPage(QWidget *parent) : QWidget(parent) {
    layout->addWidget(backToMenuButton);
    layout->addWidget(confirmButton);
 
+
+   connect(backToMenuButton, &QPushButton::clicked, this, &DataPage::onClickBackToMenuButton);
+   connect(confirmButton, &QPushButton::clicked, this, &DataPage::onClickConfirmButton);
 
 
 
@@ -61,4 +73,25 @@ DataPage::DataPage(QWidget *parent) : QWidget(parent) {
     }
 
     )");
+}
+
+
+
+void DataPage::onClickBackToMenuButton(){
+   emit switchToPage(UiPages::menu);
+}
+
+
+void DataPage::onClickConfirmButton(){
+   if (willGenerateNewDataset) {
+      emit generateNewDataset(1000, 6100);
+   }
+
+   //send selected file path to core to check
+   if (pathOfLocalSelectedFile != ""){
+      emit confirmNewDatasetFileSelected(pathOfLocalSelectedFile);
+   }
+
+   //if valid
+   //emit switchToPage(UiPages::menu);
 }
