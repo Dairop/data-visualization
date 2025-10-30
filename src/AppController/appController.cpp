@@ -5,8 +5,8 @@ AppController::AppController(QObject *parent): QObject(parent) {
     core = new Core();
 
     connect(mainWindow, &MainWindow::requestPageChange, this, &AppController::onRequestPageChange);
-    connect(mainWindow, &MainWindow::confirmNewDatasetFileSelected, this, &AppController::onConfirmNewDatasetFileSelected);
-    connect(mainWindow, &MainWindow::generateNewDataset, this, &AppController::onRequestPageChange);
+    //connect(mainWindow, &MainWindow::confirmNewDatasetFileSelected, this, &AppController::onConfirmNewDatasetFileSelected);
+    //connect(mainWindow, &MainWindow::generateNewDataset, this, &AppController::onRequestPageChange);
     
 }
 
