@@ -1,3 +1,0 @@
-source,target,weight,type
-siteA.com,siteB.com,0.8,hyperlink
-siteB.com,siteC.com,1.0,follow
