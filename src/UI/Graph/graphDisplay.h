@@ -7,11 +7,18 @@
 
  #include <unordered_map>
 
+ #include "dataset.h"
+
 
 struct Graph {
+    Graph() = default;
+    Graph(Dataset* d);
+
     std::unordered_map<int, std::string> nodesNames;
     std::unordered_map<int, int> edges; //oriented
     std::unordered_map<int, QPointF> nodesPosition;
+
+    void placePointsInCircle();
 };
 
 
@@ -29,8 +36,10 @@ private:
 
 public:
     GraphDisplay(QWidget *parent = nullptr);
+    
+    void loadDataset(Dataset* d);
 
-protected:
+protected:    
     void initializeGL() override;
     void resizeGL(int width, int height) override;
     void paintGL() override;
@@ -41,4 +50,6 @@ protected:
 
 private:
     void updateCameraPos();
+
+
 };

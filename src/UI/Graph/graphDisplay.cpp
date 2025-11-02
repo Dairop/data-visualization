@@ -1,5 +1,31 @@
 #include "graphDisplay.h"
 
+Graph::Graph(Dataset* d){
+    this->nodesNames = d->nodesNames;
+    this->edges = d->edges;
+
+    placePointsInCircle();
+}
+
+
+
+void Graph::placePointsInCircle() {
+    const int n_nodes = this->nodesNames.size();
+
+    nodesPosition.clear();
+
+    float TWO_PI = 3.141592f * 2.f;
+    int i = 0;
+    float angle = 0.0f;
+    float radius = std::sqrt(n_nodes) * 80.f;
+    for (auto & [start, _] : nodesNames){
+        angle = (float) i / (float) n_nodes * TWO_PI;
+        QPointF pos(cosf(angle) * radius, sinf(angle) * radius);
+        nodesPosition.insert(std::pair<int, QPointF>(start, pos));
+        
+        i++;
+    }
+}
 
 GraphDisplay::GraphDisplay(QWidget *parent) : 
         QOpenGLWidget(parent), 
@@ -9,27 +35,12 @@ GraphDisplay::GraphDisplay(QWidget *parent) :
 
     setMouseTracking(true);
 
-
-
-    myGraph.nodesNames.clear();
-    myGraph.edges.clear();
-    int nNodes = 10000;
-    int nEdges = 400;
-
-    srand(time(nullptr));
-
-    for (int i = 0; i < nNodes; i++){
-        myGraph.nodesNames.insert(std::pair<int, std::string>(i, "Node "+std::to_string(i)));
-        myGraph.nodesPosition.insert(std::pair<int, QPointF>(i, QPointF((i * 40) % 10000, (i / 1000)*40)));
-    }
-
-    for (int j = 0; j < nEdges; j++){
-        int start = rand() % nNodes;
-        int end = (double) start / (double) (1.0 + (rand()%100) / 10.0);
-        myGraph.edges.insert(std::pair<int, int>(start, end));
-    }
-
 }
+
+void GraphDisplay::loadDataset(Dataset* d){
+    myGraph = Graph(d);
+}
+
 
 void GraphDisplay::initializeGL() {
     initializeOpenGLFunctions();
@@ -70,7 +81,7 @@ void GraphDisplay::paintGL() {
     updateCameraPos();
 
     glColor3f(1.0f, 0.0f, 0.0f);
-    glLineWidth(3.f);
+    glLineWidth(1.f);
     glBegin(GL_LINES);
     for (const auto &[startId, endId] : myGraph.edges){
         glVertex2f(myGraph.nodesPosition.at(startId).x(), myGraph.nodesPosition.at(startId).y());

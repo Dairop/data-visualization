@@ -71,3 +71,9 @@ void MainWindow::switchToPage(UiPages p) {
         break;
     }
 }
+
+
+
+void MainWindow::loadDataset(Dataset* d){
+    visualizePage->loadDataset(d);
+}

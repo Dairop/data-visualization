@@ -5,8 +5,13 @@
 #include <filesystem>
 #include <QObject>
 
+
 class Core : public QObject {
 Q_OBJECT
+
+private:
+    std::filesystem::path datasetPath;
+    Dataset dataset;
 
 public:
     Core(){
@@ -16,9 +21,7 @@ public:
     void setNewDatasetPath(std::filesystem::path path);
     void generateNewDataset(int nodes, int edges);
 
-private:
-    std::filesystem::path datasetPath;
-    Dataset dataset;
+    Dataset* getDataset() { return &dataset; }
     
 signals:
     void datasetLoaded();

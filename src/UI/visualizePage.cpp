@@ -14,3 +14,6 @@ VisualizePage::VisualizePage(QWidget *parent) : QWidget(parent) {
     layout->addWidget(mainCanvas);
 }
 
+void VisualizePage::loadDataset(Dataset* d) {
+    mainCanvas->loadDataset(d);
+}

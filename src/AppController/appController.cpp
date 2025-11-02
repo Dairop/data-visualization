@@ -36,4 +36,5 @@ void AppController::onGenerateNewDataset(int nodes, int edges){
 
 void AppController::onDatasetLoaded(){
     mainWindow->switchToPage(UiPages::menu);
+    mainWindow->loadDataset(core->getDataset());
 }

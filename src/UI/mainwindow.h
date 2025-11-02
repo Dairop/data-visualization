@@ -5,6 +5,7 @@
 
 #include <filesystem>
 #include "UiPages.h"
+#include <dataset.h>
 
 namespace Ui {
     class MainWindow;
@@ -20,7 +21,9 @@ class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    
+
+    void loadDataset(Dataset* d);
+
 private:
     Ui::MainWindow *ui; //permet l'utilisation du fichier .ui
     QStackedWidget *stackedWidget; //permet le passage d'une page à l'autre (chaque page est un widget)
@@ -33,7 +36,7 @@ signals:
     void requestPageChange(UiPages p);
     void confirmNewDatasetFileSelected(std::filesystem::path path);
     void generateNewDataset(int nodes, int edges);
-
+    
 public slots:
     void switchToPage(UiPages p);
 };

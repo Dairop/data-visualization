@@ -1,7 +1,6 @@
 add_library(Graph
     graphDisplay.h
     graphDisplay.cpp
-    
 )
 
 find_package(Qt6 REQUIRED COMPONENTS OpenGLWidgets)
