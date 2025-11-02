@@ -32,6 +32,10 @@ private:
     double x_offset;
     double y_offset;
 
+    //taille canvas
+    int glSizeX;
+    int glSizeY;
+
     QPointF lastMousePos;
 
 public:
@@ -45,8 +49,8 @@ protected:
     void paintGL() override;
 
     void wheelEvent(QWheelEvent *event) override;
-    //void mousePressEvent(QMouseEvent *event) override;
-    //void mouseMoveEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
     void updateCameraPos();

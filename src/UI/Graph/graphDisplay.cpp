@@ -17,7 +17,7 @@ void Graph::placePointsInCircle() {
     float TWO_PI = 3.141592f * 2.f;
     int i = 0;
     float angle = 0.0f;
-    float radius = std::sqrt(n_nodes) * 80.f;
+    float radius = std::sqrt(n_nodes) * 200.f;
     for (auto & [start, _] : nodesNames){
         angle = (float) i / (float) n_nodes * TWO_PI;
         QPointF pos(cosf(angle) * radius, sinf(angle) * radius);
@@ -49,11 +49,21 @@ void GraphDisplay::initializeGL() {
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //regles de melanges des couleurs
+
+    //get current viewport size
+    GLint* params = nullptr;
+    glGetIntegerv(GL_VIEWPORT, params);
+    if (params != nullptr){
+        glSizeX = params[2];
+        glSizeY = params[3];
+    }
 }
 
 void GraphDisplay::resizeGL(int w, int h) {
     //(0,0) en haut a gauche
     glViewport(0, 0, w, h);
+    glSizeX = w;
+    glSizeY = h;
 
     //indique que l'on va modifier la projection
     glMatrixMode(GL_PROJECTION);
@@ -109,11 +119,43 @@ void GraphDisplay::wheelEvent(QWheelEvent *event) {
     const float zoomChangeFactor = 1.15f;
     const int deltaY = event->angleDelta().y();
 
-    if (deltaY > 0) {
+    const float oldZoom = zoom;
+
+    QPointF mousePos = event->position();
+
+    float worldX_before = (mousePos.x() / oldZoom) - x_offset;
+    float worldY_before = (mousePos.y() / oldZoom) - y_offset;
+
+    if (deltaY > 0 && zoom < 3000.0) {
         zoom *= zoomChangeFactor;
-    } else {
+    } else if (deltaY < 0 && zoom > 0.01) {
         zoom /= zoomChangeFactor;
+    } else {
+        return;
     }
 
+
+    float worldX_after = (mousePos.x() / zoom) - x_offset;
+    float worldY_after = (mousePos.y() / zoom) - y_offset;
+
+    x_offset += (worldX_after - worldX_before);
+    y_offset += (worldY_after - worldY_before);
+
     update();
+}
+
+
+
+void GraphDisplay::mousePressEvent(QMouseEvent *event) {
+    lastMousePos = event->pos();
+}
+
+void GraphDisplay::mouseMoveEvent(QMouseEvent *event) {
+    if (event->buttons() & Qt::LeftButton) {
+        QPointF delta = event->pos() - lastMousePos;
+        x_offset += delta.x() / zoom;
+        y_offset += delta.y() / zoom;
+        lastMousePos = event->pos();
+        update();
+    }
 }
