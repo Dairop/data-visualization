@@ -3,6 +3,7 @@
  #include <QOpenGLFunctions>
  #include <QOpenGLWidget>
  #include <QPointF>
+ #include <QWheelEvent>
 
  #include <unordered_map>
 
@@ -34,7 +35,7 @@ protected:
     void resizeGL(int width, int height) override;
     void paintGL() override;
 
-    //void wheelEvent(QWheelEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
     //void mousePressEvent(QMouseEvent *event) override;
     //void mouseMoveEvent(QMouseEvent *event) override;
 

@@ -2,12 +2,32 @@
 
 
 GraphDisplay::GraphDisplay(QWidget *parent) : 
-    QOpenGLWidget(parent), 
-    zoom(1.0), 
-    x_offset(0.0), y_offset(0.0) {  
-        setFocusPolicy(Qt::StrongFocus); //permet de recuperer les evenements clavier et souris
+        QOpenGLWidget(parent), 
+        zoom(1.0), 
+        x_offset(0.0), y_offset(0.0) {  
+    setFocusPolicy(Qt::StrongFocus); //permet de recuperer les evenements clavier et souris
 
-        setMouseTracking(true);
+    setMouseTracking(true);
+
+
+
+    myGraph.nodesNames.clear();
+    myGraph.edges.clear();
+    int nNodes = 10000;
+    int nEdges = 400;
+
+    srand(time(nullptr));
+
+    for (int i = 0; i < nNodes; i++){
+        myGraph.nodesNames.insert(std::pair<int, std::string>(i, "Node "+std::to_string(i)));
+        myGraph.nodesPosition.insert(std::pair<int, QPointF>(i, QPointF((i * 40) % 10000, (i / 1000)*40)));
+    }
+
+    for (int j = 0; j < nEdges; j++){
+        int start = rand() % nNodes;
+        int end = (double) start / (double) (1.0 + (rand()%100) / 10.0);
+        myGraph.edges.insert(std::pair<int, int>(start, end));
+    }
 
 }
 
@@ -49,25 +69,40 @@ void GraphDisplay::paintGL() {
     glLoadIdentity();
     updateCameraPos();
 
-    //grille
-    glColor3f(0.15f, 0.15f, 0.15f);
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glLineWidth(3.f);
     glBegin(GL_LINES);
-    for (int x = -1000; x <= 1000; x += 50) {
-        glVertex2f(x, -1000);
-        glVertex2f(x, 1000);
-    }
-    for (int y = -1000; y <= 1000; y += 50) {
-        glVertex2f(-1000, y);
-        glVertex2f(1000, y);
+    for (const auto &[startId, endId] : myGraph.edges){
+        glVertex2f(myGraph.nodesPosition.at(startId).x(), myGraph.nodesPosition.at(startId).y());
+        glVertex2f(myGraph.nodesPosition.at(endId).x(), myGraph.nodesPosition.at(endId).y());
     }
     glEnd();
 
-    //carre a l'origine
+
+    const int nodesHalfSize = 15;
+
     glColor3f(0.2f, 0.6f, 1.0f);
-    glBegin(GL_QUADS);
-        glVertex2f(-25.0f, -25.0f);
-        glVertex2f(25.0f, -25.0f);
-        glVertex2f(25.0f, 25.0f);
-        glVertex2f(-25.0f, 25.0f);
-    glEnd();
+    for (const auto &[id, pos] : myGraph.nodesPosition){
+        glBegin(GL_QUADS);
+            glVertex2f(pos.x() - nodesHalfSize, pos.y() - nodesHalfSize);
+            glVertex2f(pos.x() + nodesHalfSize, pos.y() - nodesHalfSize);
+            glVertex2f(pos.x() + nodesHalfSize, pos.y() + nodesHalfSize);
+            glVertex2f(pos.x() - nodesHalfSize, pos.y() + nodesHalfSize);
+        glEnd();
+    }
+    
+}
+
+
+void GraphDisplay::wheelEvent(QWheelEvent *event) {
+    const float zoomChangeFactor = 1.15f;
+    const int deltaY = event->angleDelta().y();
+
+    if (deltaY > 0) {
+        zoom *= zoomChangeFactor;
+    } else {
+        zoom /= zoomChangeFactor;
+    }
+
+    update();
 }

@@ -20,6 +20,6 @@ void Dataset::generateDataset(int nNodes, int nEdges){
     for (int j = 0; j < nEdges; j++){
         int start = rand() % nNodes;
         int end = (double) start / (double) (1.0 + (rand()%100) / 10.0);
-        edges.insert(std::pair<int, int>());
+        edges.insert(std::pair<int, int>(start, end));
     }
 }
