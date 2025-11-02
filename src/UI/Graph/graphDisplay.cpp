@@ -123,6 +123,7 @@ void GraphDisplay::wheelEvent(QWheelEvent *event) {
 
     QPointF mousePos = event->position();
 
+    //used to center the zoom on the mouse, not top left
     float worldX_before = (mousePos.x() / oldZoom) - x_offset;
     float worldY_before = (mousePos.y() / oldZoom) - y_offset;
 
