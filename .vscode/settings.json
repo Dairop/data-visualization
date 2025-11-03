@@ -88,6 +88,7 @@
         "qradiobutton": "cpp",
         "qscrollarea": "cpp",
         "random": "cpp",
-        "qopenglfunctions": "cpp"
+        "qopenglfunctions": "cpp",
+        "qopenglwidget": "cpp"
     }
 }

@@ -74,6 +74,6 @@ void MainWindow::switchToPage(UiPages p) {
 
 
 
-void MainWindow::loadDataset(Dataset* d){
-    visualizePage->loadDataset(d);
+void MainWindow::loadGraph(Graph* d){
+    visualizePage->loadGraph(d);
 }

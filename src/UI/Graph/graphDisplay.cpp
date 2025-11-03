@@ -1,31 +1,5 @@
 #include "graphDisplay.h"
 
-Graph::Graph(Dataset* d){
-    this->nodesNames = d->nodesNames;
-    this->edges = d->edges;
-
-    placePointsInCircle();
-}
-
-
-
-void Graph::placePointsInCircle() {
-    const int n_nodes = this->nodesNames.size();
-
-    nodesPosition.clear();
-
-    float TWO_PI = 3.141592f * 2.f;
-    int i = 0;
-    float angle = 0.0f;
-    float radius = std::sqrt(n_nodes) * 200.f;
-    for (auto & [start, _] : nodesNames){
-        angle = (float) i / (float) n_nodes * TWO_PI;
-        QPointF pos(cosf(angle) * radius, sinf(angle) * radius);
-        nodesPosition.insert(std::pair<int, QPointF>(start, pos));
-        
-        i++;
-    }
-}
 
 GraphDisplay::GraphDisplay(QWidget *parent) : 
         QOpenGLWidget(parent), 
@@ -35,10 +9,11 @@ GraphDisplay::GraphDisplay(QWidget *parent) :
 
     setMouseTracking(true);
 
+    myGraph = nullptr;
 }
 
-void GraphDisplay::loadDataset(Dataset* d){
-    myGraph = Graph(d);
+void GraphDisplay::loadGraph(Graph* g){
+    myGraph = g;
 }
 
 
@@ -90,12 +65,14 @@ void GraphDisplay::paintGL() {
     glLoadIdentity();
     updateCameraPos();
 
+    if (myGraph == nullptr) return;
+
     glColor3f(1.0f, 0.0f, 0.0f);
     glLineWidth(1.f);
     glBegin(GL_LINES);
-    for (const auto &[startId, endId] : myGraph.edges){
-        glVertex2f(myGraph.nodesPosition.at(startId).x(), myGraph.nodesPosition.at(startId).y());
-        glVertex2f(myGraph.nodesPosition.at(endId).x(), myGraph.nodesPosition.at(endId).y());
+    for (const auto &[startId, endId] : myGraph->edges){
+        glVertex2f(myGraph->nodesPosition.at(startId).x(), myGraph->nodesPosition.at(startId).y());
+        glVertex2f(myGraph->nodesPosition.at(endId).x(), myGraph->nodesPosition.at(endId).y());
     }
     glEnd();
 
@@ -103,7 +80,7 @@ void GraphDisplay::paintGL() {
     const int nodesHalfSize = 15;
 
     glColor3f(0.2f, 0.6f, 1.0f);
-    for (const auto &[id, pos] : myGraph.nodesPosition){
+    for (const auto &[id, pos] : myGraph->nodesPosition){
         glBegin(GL_QUADS);
             glVertex2f(pos.x() - nodesHalfSize, pos.y() - nodesHalfSize);
             glVertex2f(pos.x() + nodesHalfSize, pos.y() - nodesHalfSize);

@@ -13,7 +13,7 @@ Q_OBJECT
 
 public:
     VisualizePage(QWidget *parent = nullptr);
-    void loadDataset(Dataset* d);
+    void loadGraph(Graph* d);
 
 private:
     GraphDisplay *mainCanvas;

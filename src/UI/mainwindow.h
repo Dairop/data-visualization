@@ -5,7 +5,7 @@
 
 #include <filesystem>
 #include "UiPages.h"
-#include <dataset.h>
+#include "graph.h"
 
 namespace Ui {
     class MainWindow;
@@ -22,7 +22,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void loadDataset(Dataset* d);
+    void loadGraph(Graph* d);
 
 private:
     Ui::MainWindow *ui; //permet l'utilisation du fichier .ui

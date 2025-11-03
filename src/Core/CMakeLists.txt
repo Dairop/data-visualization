@@ -2,6 +2,9 @@ add_library(Core
     dataset.h
     dataset.cpp
 
+    graph.h
+    graph.cpp
+
     core.cpp
     core.h
 )

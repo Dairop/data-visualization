@@ -1,32 +1,21 @@
- #pragma once 
- 
- #include <QOpenGLFunctions>
- #include <QOpenGLWidget>
- #include <QPointF>
- #include <QWheelEvent>
+#pragma once
 
- #include <unordered_map>
+#include <QOpenGLFunctions>
+#include <QOpenGLWidget>
+#include <QPointF>
+#include <QWheelEvent>
 
- #include "dataset.h"
+#include <unordered_map>
 
-
-struct Graph {
-    Graph() = default;
-    Graph(Dataset* d);
-
-    std::unordered_map<int, std::string> nodesNames;
-    std::unordered_map<int, int> edges; //oriented
-    std::unordered_map<int, QPointF> nodesPosition;
-
-    void placePointsInCircle();
-};
+#include "dataset.h"
+#include "graph.h"
 
 
 
 class GraphDisplay : public QOpenGLWidget, protected QOpenGLFunctions {
     Q_OBJECT
 private:
-    Graph myGraph;
+    Graph *myGraph;
 
     double zoom;
     double x_offset;
@@ -41,7 +30,7 @@ private:
 public:
     GraphDisplay(QWidget *parent = nullptr);
     
-    void loadDataset(Dataset* d);
+    void loadGraph(Graph* d);
 
 protected:    
     void initializeGL() override;
