@@ -38,5 +38,6 @@ signals:
 
 private:
     void forceDirected();
+    void collisions();
 
 };

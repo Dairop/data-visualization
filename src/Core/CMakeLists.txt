@@ -1,4 +1,7 @@
 add_library(Core
+    quadtree.h
+    quadtree.cpp
+
     dataset.h
     dataset.cpp
 

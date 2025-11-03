@@ -4,7 +4,11 @@ Graph::Graph(const Dataset* d){
     this->nodesNames = d->nodesNames;
     this->edges = d->edges;
 
+    environmentSize = QPointF(450000, 450000);
+
     placePointsInCircle();
+
+    quadtree = new Quadtree(QPointF(0, 0), environmentSize);
 }
 
 
@@ -17,7 +21,8 @@ void Graph::placePointsInCircle() {
     float TWO_PI = 3.141592f * 2.f;
     int i = 0;
     float angle = 0.0f;
-    float radius = std::sqrt(n_nodes) * 200.f;
+    float radius = std::sqrt(n_nodes) * 200.f; // need to be careful with environmentSize
+
     for (auto & [start, _] : nodesNames){
         angle = (float) i / (float) n_nodes * TWO_PI;
         QPointF pos(cosf(angle) * radius, sinf(angle) * radius);

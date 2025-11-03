@@ -4,6 +4,7 @@
 
 #include <unordered_map>
 #include "dataset.h"
+#include "quadtree.h"
 
 
 
@@ -15,5 +16,10 @@ struct Graph {
     std::unordered_map<int, int> edges; //oriented
     std::unordered_map<int, QPointF> nodesPosition;
 
+    Quadtree *quadtree;
+
     void placePointsInCircle();
+
+private:
+    QPointF environmentSize;
 };
