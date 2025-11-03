@@ -20,5 +20,6 @@ private:
 
 signals:
     void switchToPage(UiPages p);
+    void startApplyingForceDirected();
     
 };

@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(dataPage, &DataPage::confirmNewDatasetFileSelected, this, &MainWindow::confirmNewDatasetFileSelected);
     connect(dataPage, &DataPage::generateNewDataset, this, &MainWindow::generateNewDataset);
 
+    connect(visualizePage, &VisualizePage::startApplyingForceDirected, this, &MainWindow::startApplyingForceDirected);
 
     stackedWidget->setCurrentWidget(menuPage);
 

@@ -7,6 +7,7 @@ AppController::AppController(QObject *parent): QObject(parent) {
     connect(mainWindow, &MainWindow::requestPageChange, this, &AppController::onRequestPageChange);
     //connect(mainWindow, &MainWindow::confirmNewDatasetFileSelected, this, &AppController::onConfirmNewDatasetFileSelected);
     connect(mainWindow, &MainWindow::generateNewDataset, this, &AppController::onGenerateNewDataset);
+    connect(mainWindow, &MainWindow::startApplyingForceDirected, this, &AppController::startApplyingForceDirected);
     
     connect(core, &Core::datasetGenerated, this, &AppController::onDatasetLoaded);
     connect(core, &Core::datasetLoaded, this, &AppController::onDatasetLoaded);
@@ -37,4 +38,9 @@ void AppController::onGenerateNewDataset(int nodes, int edges){
 void AppController::onDatasetLoaded(){
     mainWindow->switchToPage(UiPages::menu);
     mainWindow->loadGraph(core->getGraph());
+}
+
+
+void AppController::startApplyingForceDirected(){
+    core->startApplyingForceDirected();
 }

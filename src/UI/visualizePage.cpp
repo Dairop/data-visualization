@@ -13,6 +13,22 @@ VisualizePage::VisualizePage(QWidget *parent) : QWidget(parent) {
     backBtn->raise();
     connect(backBtn, &QPushButton::clicked, [this]() {emit switchToPage(UiPages::menu); });
     
+
+    QPushButton *circularBtn = new QPushButton("Circular representation", this);
+    circularBtn->setFixedSize(150, 25);
+    circularBtn->move(15, 45);
+    circularBtn->raise();
+    //connect(circularBtn, &QPushButton::clicked, [this]() {emit switchToPage(UiPages::menu); });
+
+
+    QPushButton *forceBtn = new QPushButton("Force directed representation", this);
+    forceBtn->setFixedSize(175, 25);
+    forceBtn->move(15, 75);
+    forceBtn->raise();
+    //mainCanvas afin de ne pas perdre le focus
+    connect(forceBtn, &QPushButton::clicked, [this]() {emit startApplyingForceDirected(); this->mainCanvas->update();});
+
+
     //layout->addWidget(backBtn, 0, Qt::AlignLeft | Qt::AlignTop); 
 
     setLayout(layout);

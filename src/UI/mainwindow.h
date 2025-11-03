@@ -36,6 +36,7 @@ signals:
     void requestPageChange(UiPages p);
     void confirmNewDatasetFileSelected(std::filesystem::path path);
     void generateNewDataset(int nodes, int edges);
+    void startApplyingForceDirected();
     
 public slots:
     void switchToPage(UiPages p);

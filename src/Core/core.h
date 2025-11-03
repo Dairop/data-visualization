@@ -5,6 +5,7 @@
 
 #include <filesystem>
 #include <QObject>
+#include <thread>
 
 
 class Core : public QObject {
@@ -27,9 +28,15 @@ public:
 
     Dataset* getDataset() { return &dataset; }
     Graph* getGraph() { return graph; }
+
+    void startApplyingForceDirected();
     
 signals:
     void datasetLoaded();
     void datasetGenerated();
+
+
+private:
+    void forceDirected();
 
 };

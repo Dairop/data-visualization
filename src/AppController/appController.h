@@ -27,5 +27,6 @@ public slots:
     void onConfirmNewDatasetFileSelected(std::filesystem::path path);
     void onGenerateNewDataset(int nodes, int edges);
     void onDatasetLoaded();
+    void startApplyingForceDirected();
     
 };
