@@ -4,13 +4,12 @@
 #include <iostream>
 #include <random>
 #include <time.h>
+#include <vector>
 
 struct Dataset {
     std::string filePath;
     std::unordered_map<int, std::string> nodesNames;
-    std::unordered_map<int, int> edges; //oriented
-
-    //we should use a map of linked lists to have multiple edges starting from a node
+    std::unordered_map<int, std::vector<int>> edges; //oriented
 
     void loadFromFile(std::string path);
     void generateDataset(int nNodes, int nEdges);

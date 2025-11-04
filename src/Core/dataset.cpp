@@ -17,6 +17,7 @@ int randInt32b() {
 void Dataset::generateDataset(int nNodes, int nEdges){
     nodesNames.clear();
     edges.clear();
+
     if (nNodes == 0) return;
 
     srand(time(nullptr));
@@ -25,12 +26,18 @@ void Dataset::generateDataset(int nNodes, int nEdges){
         nodesNames.insert(std::pair<int, std::string>(i, "Node "+std::to_string(i)));
     }
 
+
     if (RAND_MAX < nNodes && RAND_MAX == 0x7fff) {
         //randmax trop faible pour grands graphes
         for (int j = 0; j < nEdges; j++){
+            /*
             int start = randInt32b() % nNodes;
             int end = (double) start / (double) (1.0 + (randInt32b()%100) / 10.0);
-            edges.insert(std::pair<int, int>(start, end));
+            */
+
+            int start = j % nNodes;
+            int end = randInt32b() % nNodes;
+            edges[start].push_back(end);
         }
     
     } else {
@@ -38,7 +45,7 @@ void Dataset::generateDataset(int nNodes, int nEdges){
         for (int j = 0; j < nEdges; j++){
             int start = rand() % nNodes;
             int end = (double) start / (double) (1.0 + (rand()%100) / 10.0);
-            edges.insert(std::pair<int, int>(start, end));
+            edges[start].push_back(end);
         }
 
     } 

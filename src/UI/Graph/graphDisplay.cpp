@@ -70,9 +70,11 @@ void GraphDisplay::paintGL() {
     glColor3f(1.0f, 0.0f, 0.0f);
     glLineWidth(1.f);
     glBegin(GL_LINES);
-    for (const auto &[startId, endId] : myGraph->edges){
-        glVertex2f(myGraph->nodesPosition.at(startId).x(), myGraph->nodesPosition.at(startId).y());
-        glVertex2f(myGraph->nodesPosition.at(endId).x(), myGraph->nodesPosition.at(endId).y());
+    for (const auto &[startId, edgesFromStart] : myGraph->edges){
+        for (const int endId : edgesFromStart){
+            glVertex2f(myGraph->nodesPosition.at(startId).x(), myGraph->nodesPosition.at(startId).y());
+            glVertex2f(myGraph->nodesPosition.at(endId).x(), myGraph->nodesPosition.at(endId).y());
+        }
     }
     glEnd();
 

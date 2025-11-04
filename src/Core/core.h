@@ -38,6 +38,6 @@ signals:
 
 private:
     void forceDirected();
-    void collisions();
+    void collisions(float radius = 150.0f, float force = 1.0f /*1.0f = solve the collision*/);
 
 };
