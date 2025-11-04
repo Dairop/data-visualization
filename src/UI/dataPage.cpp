@@ -93,7 +93,7 @@ void DataPage::onClickBackToMenuButton(){
 
 void DataPage::onClickConfirmButton(){
    if (willGenerateNewDataset) {
-      emit generateNewDataset(30000, 50000);
+      emit generateNewDataset(500, 12000);
    }
 
    //send selected file path to core to check

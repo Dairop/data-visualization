@@ -51,17 +51,20 @@ bool Quadtree::insert(QPointF p, int id){
 
 
 void Quadtree::subdivide(){
-    northWest = new Quadtree(quadCenterPosition - quadSize / 4.0f, quadSize/2.0f, maxDepth - 1);
-    
-    int new_x = quadCenterPosition.x() + quadSize.x() / 4.0f;
-    int new_y = quadCenterPosition.y() - quadSize.y() / 4.0f;
-    northEast = new Quadtree(QPointF(new_x, new_y), quadSize/2.0f, maxDepth - 1);
+    const QPointF childSize = quadSize / 2.0f;    
+    const QPointF quarterSize = quadSize / 4.0f;        
 
-    southEast = new Quadtree(quadCenterPosition + quadSize / 4.0f, quadSize/2.0f, maxDepth - 1);
+    QPointF nwCenter = quadCenterPosition + QPointF(-quarterSize.x(), -quarterSize.y());
+    northWest = new Quadtree(nwCenter, childSize, maxDepth - 1);
 
-    new_x = quadCenterPosition.x() - quadSize.x() / 4.0f;
-    new_y = quadCenterPosition.y() + quadSize.y() / 4.0f;
-    southWest = new Quadtree(QPointF(new_x, new_y), quadSize/2.0f, maxDepth - 1);
+    QPointF neCenter = quadCenterPosition + QPointF(+quarterSize.x(), -quarterSize.y());
+    northEast = new Quadtree(neCenter, childSize, maxDepth - 1);
+
+    QPointF seCenter = quadCenterPosition + QPointF(+quarterSize.x(), +quarterSize.y());
+    southEast = new Quadtree(seCenter, childSize, maxDepth - 1);
+
+    QPointF swCenter = quadCenterPosition + QPointF(-quarterSize.x(), +quarterSize.y());
+    southWest = new Quadtree(swCenter, childSize, maxDepth - 1);
 }
 
 
@@ -87,7 +90,26 @@ bool Quadtree::queryRangeRect(const QPointF& center, const  QPointF& size, std::
 }
 
 
-//bool queryRangeCircle(QPointF& center, QPointF& size, std::vector<int>& pointsInRange);
+bool Quadtree::queryRangeCircle(const QPointF& center, const float radius, std::vector<int>& pointsInRange){
+    QPointF circleQuadSize = QPointF(radius * 2.0f, radius * 2.0f);
+
+    if (collideRectAndRect(quadCenterPosition, quadSize, center, circleQuadSize)){
+        for (const auto&[id, dataPos]: data){
+            if (distSqrd(dataPos, center) <= radius*radius){
+                pointsInRange.push_back(id);
+            }
+        }
+
+        if (northWest != nullptr){
+            northWest->queryRangeCircle(center, radius, pointsInRange);
+            northEast->queryRangeCircle(center, radius, pointsInRange);
+            southEast->queryRangeCircle(center, radius, pointsInRange);
+            southWest->queryRangeCircle(center, radius, pointsInRange);
+        }
+    }
+
+    return true;
+}
 
 
 

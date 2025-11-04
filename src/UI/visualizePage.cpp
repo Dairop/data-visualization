@@ -26,7 +26,7 @@ VisualizePage::VisualizePage(QWidget *parent) : QWidget(parent) {
     forceBtn->move(15, 75);
     forceBtn->raise();
     //mainCanvas afin de ne pas perdre le focus
-    connect(forceBtn, &QPushButton::clicked, [this]() {emit startApplyingForceDirected(); this->mainCanvas->update();});
+    connect(forceBtn, &QPushButton::clicked, [this]() {emit startApplyingForceDirected(); this->mainCanvas->setFocus();});
 
 
     //layout->addWidget(backBtn, 0, Qt::AlignLeft | Qt::AlignTop); 

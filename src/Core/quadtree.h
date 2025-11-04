@@ -33,9 +33,12 @@ public:
 
     bool insert(QPointF p, int id);
     bool queryRangeRect(const QPointF& center, const QPointF& size, std::vector<int>& pointsInRange);
-    //bool queryRangeCircle(const QPointF& center, const QPointF& size, std::vector<int>& pointsInRange);
+    bool queryRangeCircle(const QPointF& center, const float radius, std::vector<int>& pointsInRange);
 
     void del();
+
+    QPointF getQuadSize() const { return quadSize; }
+    QPointF getQuadCenterPos() const { return quadCenterPosition; } 
 
 private:
     void subdivide();
