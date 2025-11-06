@@ -67,6 +67,14 @@ void GraphDisplay::paintGL() {
 
     if (myGraph == nullptr) return;
 
+    std::unordered_map<int, QPointF> positionsCopy;
+    std::unordered_map<int, std::vector<int>> edgesCopy;
+    {
+        std::lock_guard<std::mutex> lock(myGraph->positionMutex);
+        positionsCopy = myGraph->nodesPosition;
+        edgesCopy = myGraph->edges;
+    }
+
     glColor3f(1.0f, 0.0f, 0.0f);
     glLineWidth(1.f);
     glBegin(GL_LINES);

@@ -40,4 +40,6 @@ signals:
     
 public slots:
     void switchToPage(UiPages p);
+    void onPositionsUpdated(int iteration, int totalIterations);
+    void finishedApplyingForceDirected();
 };

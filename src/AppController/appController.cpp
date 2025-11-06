@@ -11,6 +11,8 @@ AppController::AppController(QObject *parent): QObject(parent) {
     
     connect(core, &Core::datasetGenerated, this, &AppController::onDatasetLoaded);
     connect(core, &Core::datasetLoaded, this, &AppController::onDatasetLoaded);
+    connect(core, &Core::positionsUpdated, this, &AppController::onPositionsUpdated);
+    connect(core, &Core::finishedApplyingForceDirected, this, &AppController::onFinishedApplyingForceDirected);
 }
 
 AppController::~AppController(){
@@ -24,6 +26,10 @@ void AppController::run() {
 
 void AppController::onRequestPageChange(UiPages p){
     mainWindow->switchToPage(p);
+
+    if (p != UiPages::visualize) {
+        core->stopThreads();
+    }
 }
 
 void AppController::onConfirmNewDatasetFileSelected(std::filesystem::path path){
@@ -43,4 +49,14 @@ void AppController::onDatasetLoaded(){
 
 void AppController::startApplyingForceDirected(){
     core->startApplyingForceDirected();
+}
+
+
+void AppController::onPositionsUpdated(int iteration, int totalIterations){
+    mainWindow->onPositionsUpdated(iteration, totalIterations);
+}
+
+
+void AppController::onFinishedApplyingForceDirected(){
+    mainWindow->finishedApplyingForceDirected();
 }

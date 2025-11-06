@@ -3,6 +3,7 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QProgressBar>
 
 #include "UiPages.h"
 #include "Graph/graphDisplay.h"
@@ -18,8 +19,16 @@ public:
 private:
     GraphDisplay *mainCanvas;
 
+    QProgressBar *progressBar;
+    QPushButton *forceBtn;
+    QPushButton *circularBtn;
+    QPushButton *backBtn;
+
 signals:
     void switchToPage(UiPages p);
     void startApplyingForceDirected();
-    
+
+public slots: 
+    void onPositionsUpdated(int iteration, int totalIterations);
+
 };

@@ -78,3 +78,14 @@ void MainWindow::switchToPage(UiPages p) {
 void MainWindow::loadGraph(Graph* d){
     visualizePage->loadGraph(d);
 }
+
+
+
+void MainWindow::onPositionsUpdated(int iteration, int totalIterations){
+    visualizePage->onPositionsUpdated(iteration, totalIterations);
+}
+
+
+void MainWindow::finishedApplyingForceDirected(){
+    visualizePage->onPositionsUpdated(1,1);
+}

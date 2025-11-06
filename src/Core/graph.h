@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QPointF>
+#include <mutex>
 
 #include <unordered_map>
 #include "dataset.h"
@@ -22,6 +23,7 @@ struct Graph {
 
     void placePointsInCircle();
 
+    std::mutex positionMutex;
 private:
     QPointF environmentSize;
 };

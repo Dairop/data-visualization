@@ -28,5 +28,6 @@ public slots:
     void onGenerateNewDataset(int nodes, int edges);
     void onDatasetLoaded();
     void startApplyingForceDirected();
-    
+    void onPositionsUpdated(int iteration, int totalIterations);
+    void onFinishedApplyingForceDirected();
 };

@@ -44,5 +44,4 @@ protected:
 private:
     void updateCameraPos();
 
-
 };

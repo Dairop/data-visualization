@@ -23,9 +23,13 @@ void Core::generateNewDataset(int nodes, int edges){
 
 
 void Core::startApplyingForceDirected(){
-    std::thread t(&Core::forceDirected, this);
-    t.detach();
-    //forceDirected();
+    if (forceDirectedThread.joinable()) {
+        return;
+    }
+
+    threadsMustStop.store(false);
+
+    forceDirectedThread = std::thread(&Core::forceDirected, this);
 }
 
 
@@ -35,8 +39,11 @@ float lerp(float a, float b, float t){
 }
 
 
-float cube(const float t){
-    return  (t -1)*(t -1)*-1+1;
+//for 0.0 <= t <= 1.0
+//fast growth from t = 0.0 to 0.25, slow from t=0.25 to 0.5,   at t >= 0.5, same as when t = t - 0.5
+float twoPullsProgression(float t){
+    if (t > 0.5f) t -= 0.5f;
+    return  (t - 1.0f)*(t - 1.0f)*-1.0f+1.0f;
 }
 
 
@@ -46,16 +53,50 @@ float dist(const QPointF& p1, const QPointF& p2){
 }
 
 
+void Core::keepNodesInsideQuadtree(){
+    float quad_center_x = graph->quadtree->getQuadCenterPos().x();
+    float quad_center_y = graph->quadtree->getQuadCenterPos().y();
+
+    float quad_min_x = quad_center_x - graph->quadtree->getQuadSize().x() / 2.0f;
+    float quad_min_y = quad_center_y - graph->quadtree->getQuadCenterPos().y() / 2.0f;
+    
+    float quad_max_x = quad_center_x + graph->quadtree->getQuadSize().x() / 2.0f;
+    float quad_max_y = quad_center_y + graph->quadtree->getQuadCenterPos().y() / 2.0f;
+
+    for (auto&[id, pos]: graph->nodesPosition){
+        if (pos.x() < quad_min_x) pos.setX(quad_min_x);
+        else if (pos.x() > quad_max_x) pos.setX(quad_max_x);
+
+        if (pos.y() < quad_min_y) pos.setY(quad_min_y);
+        else if (pos.y() > quad_max_y) pos.setY(quad_max_y);
+    }
+}
+
+
+
+void Core::stopApplyingForceDirected() {
+    threadsMustStop.store(true);
+
+    if (forceDirectedThread.joinable()) {
+        forceDirectedThread.join();
+    }
+}
+
+
 
 void Core::forceDirected(){
-    const int NB_ITERATIONS = 5000;
+    const int NB_ITERATIONS = 3000;
     float iterationsProgression = 0.0f;
+
+    //frames between two collisions checks
+    int timeBetweenTwoCollisionChecks = 25;
+    if (graph->nodesNames.size() > 1000) timeBetweenTwoCollisionChecks = graph->nodesNames.size() / 25;
 
     const float velocityDamping = 0.95f;
 
 
     //evolving simulation parameters
-    float softCollisionsRadius = 150.0f;
+    float softCollisionsRadius = 400.0f;
     float thisIterationOptimalEdgeLen = 150.0f;
     float this_iteration_force;
      
@@ -71,12 +112,14 @@ void Core::forceDirected(){
 
 
     for (unsigned int it = 0; it < NB_ITERATIONS; it++){
+        checkForceDirectedEnd();
+
         iterationsProgression = (float) it / (float) NB_ITERATIONS;
 
-        this_iteration_force = 0.1f + (1.0f - cube(iterationsProgression)) / 100.0f;
-        softCollisionsRadius = lerp(10.0f, 400.0f, cube(iterationsProgression));
+        this_iteration_force = 0.1f + (1.0f - twoPullsProgression(iterationsProgression)) / 100.0f;
+        softCollisionsRadius = lerp(10.0f, 1000.0f, twoPullsProgression(iterationsProgression));
         
-        thisIterationOptimalEdgeLen = 10.0f + softCollisionsRadius / 2.5f;
+        thisIterationOptimalEdgeLen = 100.0f + 50.0f * twoPullsProgression(iterationsProgression);
 
         //for every edge, pull toward the startId node
         for (const auto &[startId, edgesFromStart] : graph->edges){
@@ -104,12 +147,13 @@ void Core::forceDirected(){
                 float thisNodeNorm = edgesFromStart.size();
 
                 float desiredLength = thisIterationOptimalEdgeLen * (1.0f + thisNodeNorm / 2.0f);
-                float k = 0.08f;
+                float k = 0.07f;
                 float appliedForce = k * (d - desiredLength);
 
-                //we want to reduce the force of a spring depending on the norm of it's nodes
-                //to avoid the hairball effect
-                //see https://www.researchgate.net/figure/The-Hairball-Effect-Ontology-visualization-using-a-2D-Force-Directed-layout-showing_fig3_272489007
+                //following is deprecated, mass now used in displacement instead
+                //- we want to reduce the force of a spring depending on the norm of it's nodes
+                //- to avoid the hairball effect
+                //- see https://www.researchgate.net/figure/The-Hairball-Effect-Ontology-visualization-using-a-2D-Force-Directed-layout-showing_fig3_272489007
                 float degNorm = 1.0f;//std::sqrtf((thisNodeNorm + 1) * (graph->edges[endId].size() + 1));
                 appliedForce /= degNorm;
 
@@ -130,11 +174,18 @@ void Core::forceDirected(){
 
             float mass = graph->nodesMass[id];
 
-            velocity[id] = velocity[id] * velocityDamping + disp / mass / mass;
-            graph->nodesPosition[id] += velocity[id];
+            velocity[id] = velocity[id] * velocityDamping + disp / mass;
+
+            float vel = dist(velocity[id], QPointF(0, 0));
+            if (vel > 50.0f)
+                velocity[id] *= 50.0f / vel;
 
             disp.setX(0.0f);
             disp.setY(0.0f);
+
+            graph->positionMutex.lock();
+            graph->nodesPosition[id] += velocity[id];
+            graph->positionMutex.unlock();
         }
 
 
@@ -170,13 +221,32 @@ void Core::forceDirected(){
 
 
 
+        
+        if ((it % timeBetweenTwoCollisionChecks) == 0) {
+            for (unsigned int i = 0; i < graph->nodesNames.size() / 50; i++) {
+                checkForceDirectedEnd();
 
-        if (it % 25) for (unsigned int i = 0; i < graph->nodesNames.size() / 100; i++) collisions(softCollisionsRadius, 0.5f);
+                collisions(softCollisionsRadius, 0.3f);
+            }
+
+            for (unsigned int i = 0; i < graph->nodesNames.size() / 50; i++) {
+                checkForceDirectedEnd();
+
+                collisions(softCollisionsRadius*0.5f, 0.5f);
+            }
+        }
+
+        emit positionsUpdated(it, NB_ITERATIONS);
     }
 
     
-    for (unsigned int i = 0; i < 20; i++) collisions(150.0f, 1.0f);
+    for (unsigned int i = 0; i < 20; i++) {
+        checkForceDirectedEnd();
 
+        collisions(150.0f, 1.0f);
+    }
+    
+    emit positionsUpdated(NB_ITERATIONS, NB_ITERATIONS);
 }
 
 

@@ -37,14 +37,16 @@ void Dataset::generateDataset(int nNodes, int nEdges){
 
             int start = j % nNodes;
             int end = randInt32b() % nNodes;
+            if (start == end) start = (start + 1) % nNodes;
             edges[start].push_back(end);
         }
     
     } else {
 
         for (int j = 0; j < nEdges; j++){
-            int start = rand() % nNodes;
-            int end = (double) start / (double) (1.0 + (rand()%100) / 10.0);
+            int start = j % nNodes;
+            int end = randInt32b() % nNodes;
+            if (start == end) start = (start + 1) % nNodes;
             edges[start].push_back(end);
         }
 
