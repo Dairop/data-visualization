@@ -3,6 +3,18 @@
 #include <algorithm>
 
 
+Core::Core(){
+    datasetPath = "";
+    graph = nullptr;
+
+    connect(this, &Core::finishedApplyingForceDirected, this, &Core::onFinishedApplyingForceDirected);
+
+}
+
+Core::~Core() {
+    stopApplyingForceDirected();
+}
+
 void Core::setNewDatasetPath(std::filesystem::path path){
     datasetPath = path;
 
@@ -22,14 +34,27 @@ void Core::generateNewDataset(int nodes, int edges){
 
 
 
+void Core::joinWorkerIfNeeded() {
+    if (forceDirectedThread.joinable()) {
+        forceDirectedThread.join();
+    }
+    
+    threadForceDirectedRunning.store(false);
+}
+
+
 void Core::startApplyingForceDirected(){
     if (forceDirectedThread.joinable()) {
-        return;
+        if (!threadForceDirectedRunning.load()) {
+            forceDirectedThread.join();
+        } else {
+            return;
+        }
     }
 
     threadsMustStop.store(false);
-
     forceDirectedThread = std::thread(&Core::forceDirected, this);
+    threadForceDirectedRunning.store(true);
 }
 
 
@@ -40,9 +65,9 @@ float lerp(float a, float b, float t){
 
 
 //for 0.0 <= t <= 1.0
-//fast growth from t = 0.0 to 0.25, slow from t=0.25 to 0.5,   at t >= 0.5, same as when t = t - 0.5
+//fast growth from t = 0.0 to 0.25, slow from t=0.25 to 0.5,   at t >= 0.5, same as when t = t - 0.45
 float twoPullsProgression(float t){
-    if (t > 0.5f) t -= 0.5f;
+    if (t > 0.5f) t -= 0.45f;
     return  (t - 1.0f)*(t - 1.0f)*-1.0f+1.0f;
 }
 
@@ -86,6 +111,10 @@ void Core::stopApplyingForceDirected() {
 bool Core::checkForceDirectedEnd() {
     if (threadsMustStop.load()) {
         emit finishedApplyingForceDirected();
+        threadsMustStop.store(false);
+
+        threadForceDirectedRunning.store(false);
+
         return true;
     }
     return false;
@@ -100,7 +129,7 @@ void Core::forceDirected(){
     float iterationsProgression = 0.0f;
 
     //frames between two collisions checks
-    int timeBetweenTwoCollisionChecks = 25;
+    int timeBetweenTwoCollisionChecks = 15;
     if (graph->nodesNames.size() > 1000) timeBetweenTwoCollisionChecks = graph->nodesNames.size() / 25;
 
     const float velocityDamping = 0.95f;
@@ -258,6 +287,7 @@ void Core::forceDirected(){
     }
     
     emit positionsUpdated(NB_ITERATIONS, NB_ITERATIONS);
+    emit finishedApplyingForceDirected();
 }
 
 
@@ -319,4 +349,10 @@ void Core::collisions(float radius, float force){
         
         pointsInRange.clear();
     }
+}
+
+
+
+void Core::onFinishedApplyingForceDirected() {
+    joinWorkerIfNeeded();
 }

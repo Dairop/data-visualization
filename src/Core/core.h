@@ -11,19 +11,9 @@
 class Core : public QObject {
 Q_OBJECT
 
-private:
-    std::filesystem::path datasetPath;
-    Dataset dataset;
-
-    Graph* graph;
-
-    std::thread forceDirectedThread;
-
 public:
-    Core(){
-        datasetPath = "";
-        graph = nullptr;
-    }
+    Core();
+    ~Core();
 
     void setNewDatasetPath(std::filesystem::path path);
     void generateNewDataset(int nodes, int edges);
@@ -34,7 +24,7 @@ public:
     void startApplyingForceDirected();
     void stopApplyingForceDirected();
 
-    bool isThreadRunning() { return forceDirectedThread.joinable(); }
+    bool isThreadRunning() { return threadForceDirectedRunning; }
     
 signals:
     void datasetLoaded();
@@ -46,11 +36,23 @@ signals:
 
     void finishedApplyingForceDirected();
 
+private slots:
+    void onFinishedApplyingForceDirected(); //we want to join() the workers in the main thread
+
 private:
     void forceDirected();
     void collisions(float radius = 150.0f, float force = 1.0f /*1.0f = solve the collision*/);
     void keepNodesInsideQuadtree();
     bool checkForceDirectedEnd();
+    void joinWorkerIfNeeded();
+
+    std::filesystem::path datasetPath;
+    Dataset dataset;
+
+    Graph* graph;
+
+    std::thread forceDirectedThread;
 
     std::atomic_bool threadsMustStop;
+    std::atomic_bool threadForceDirectedRunning;
 };

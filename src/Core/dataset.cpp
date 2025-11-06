@@ -42,13 +42,11 @@ void Dataset::generateDataset(int nNodes, int nEdges){
         }
     
     } else {
-
         for (int j = 0; j < nEdges; j++){
             int start = j % nNodes;
             int end = randInt32b() % nNodes;
             if (start == end) start = (start + 1) % nNodes;
             edges[start].push_back(end);
         }
-
-    } 
+    }
 }
