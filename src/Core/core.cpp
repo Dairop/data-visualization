@@ -68,7 +68,7 @@ float lerp(float a, float b, float t){
 //fast growth from t = 0.0 to 0.25, slow from t=0.25 to 0.5,   at t >= 0.5, same as when t = t - 0.45
 float twoPullsProgression(float t){
     if (t > 0.5f) t -= 0.45f;
-    return  (t - 1.0f)*(t - 1.0f)*-1.0f+1.0f;
+    return  (t - 1.0f)*(t - 1.0f)*-2.0f+2.0f;
 }
 
 

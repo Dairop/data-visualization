@@ -30,4 +30,6 @@ public slots:
     void startApplyingForceDirected();
     void onPositionsUpdated(int iteration, int totalIterations);
     void onFinishedApplyingForceDirected();
+    void requestStopCurrentTask();
+    void resetToCircularRepresentation();
 };

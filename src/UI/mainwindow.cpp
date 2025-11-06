@@ -39,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(dataPage, &DataPage::generateNewDataset, this, &MainWindow::generateNewDataset);
 
     connect(visualizePage, &VisualizePage::startApplyingForceDirected, this, &MainWindow::startApplyingForceDirected);
+    connect(visualizePage, &VisualizePage::requestStopCurrentTask, this, &MainWindow::requestStopCurrentTask);
+    connect(visualizePage, &VisualizePage::resetToCircularRepresentation, this, &MainWindow::resetToCircularRepresentation);
 
     stackedWidget->setCurrentWidget(menuPage);
 

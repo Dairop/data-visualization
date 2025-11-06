@@ -18,7 +18,7 @@ VisualizePage::VisualizePage(QWidget *parent) : QWidget(parent) {
     circularBtn->setFixedSize(150, 25);
     circularBtn->move(15, 45);
     circularBtn->raise();
-    //connect(circularBtn, &QPushButton::clicked, [this]() {emit switchToPage(UiPages::menu); });
+    connect(circularBtn, &QPushButton::clicked, [this]() {emit resetToCircularRepresentation(); });
 
 
     forceBtn = new QPushButton("Force directed representation", this);
@@ -42,6 +42,17 @@ VisualizePage::VisualizePage(QWidget *parent) : QWidget(parent) {
     layout->addWidget(progressBar);
 
 
+    stopBtn = new QPushButton("Stop", mainCanvas);
+    stopBtn->setFixedSize(75, 25);
+    stopBtn->move(0,0); //positionned on resize because depends on the mainCanvas size
+    stopBtn->raise();
+    connect(stopBtn, &QPushButton::clicked, [this]() {
+        stopBtn->setVisible(false);
+        progressBar->setVisible(true);
+        progressBar->setValue(0);
+        emit requestStopCurrentTask(); 
+    });
+
     //layout->addWidget(backBtn, 0, Qt::AlignLeft | Qt::AlignTop); 
 
     setLayout(layout);
@@ -58,6 +69,22 @@ void VisualizePage::onPositionsUpdated(int iteration, int totalIterations) {
         int progress = (iteration * 100) / totalIterations;
         progressBar->setValue(progress);
         progressBar->setVisible(progress < 100);
+        stopBtn->setVisible(progress < 100);
     }
+
+    int xPos = mainCanvas->width() - stopBtn->width() - 15;
+    int yPos = mainCanvas->height() - stopBtn->height() - 15;
+    stopBtn->move(xPos, yPos);
+
     mainCanvas->update();
+}
+
+
+
+void VisualizePage::resizeEvent(QResizeEvent *event) {
+    QWidget::resizeEvent(event);
+
+    int xPos = mainCanvas->width() - stopBtn->width() - 15;
+    int yPos = mainCanvas->height() - stopBtn->height() - 15;
+    stopBtn->move(xPos, yPos);
 }

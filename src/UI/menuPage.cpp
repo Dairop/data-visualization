@@ -1,8 +1,18 @@
 #include "menuPage.h"
 
 MenuPage::MenuPage(QWidget *parent) : QWidget(parent) {
-    QVBoxLayout *layout = new QVBoxLayout();
-    setLayout(layout);
+    QWidget *container = new QWidget();
+
+   QVBoxLayout *layout = new QVBoxLayout();
+   container->setLayout(layout);
+
+   layout->setSpacing(12);
+   layout->setContentsMargins(20, 20, 20, 20);
+   layout->setAlignment(Qt::AlignCenter | Qt::AlignHCenter);
+
+   QScrollArea *scrollArea = new QScrollArea(this);
+   scrollArea->setWidgetResizable(true);
+   scrollArea->setWidget(container);
 
     //contenu
     QPushButton *vitualizeButton = new QPushButton("Visualize loaded data");
@@ -15,10 +25,15 @@ MenuPage::MenuPage(QWidget *parent) : QWidget(parent) {
     layout->addWidget(dataButton);
     layout->addWidget(exitButton);
 
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->addWidget(scrollArea);
+    setLayout(mainLayout);
+
 
     connect(vitualizeButton, &QPushButton::clicked, this, &MenuPage::onVisualizeClicked);
     connect(dataButton, &QPushButton::clicked, this, &MenuPage::onLoadDataClicked);
     connect(exitButton, &QPushButton::clicked, this, exit);
+
 
 
     //variables generees avec https://mywebtools.biagi.org/colors/palette/ , placees

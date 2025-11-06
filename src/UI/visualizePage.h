@@ -22,12 +22,17 @@ private:
     QProgressBar *progressBar;
     QPushButton *forceBtn;
     QPushButton *circularBtn;
+    QPushButton *stopBtn;
     QPushButton *backBtn;
+
+    void resizeEvent(QResizeEvent *event) override;
 
 signals:
     void switchToPage(UiPages p);
+    void resetToCircularRepresentation();
     void startApplyingForceDirected();
-
+    void requestStopCurrentTask();
+    
 public slots: 
     void onPositionsUpdated(int iteration, int totalIterations);
 

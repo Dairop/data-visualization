@@ -25,6 +25,8 @@ public:
     void stopApplyingForceDirected();
 
     bool isThreadRunning() { return threadForceDirectedRunning; }
+
+    void placePointsInCircle() { graph->placePointsInCircle(); }
     
 signals:
     void datasetLoaded();

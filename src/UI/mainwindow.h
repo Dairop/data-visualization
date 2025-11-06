@@ -37,9 +37,12 @@ signals:
     void confirmNewDatasetFileSelected(std::filesystem::path path);
     void generateNewDataset(int nodes, int edges);
     void startApplyingForceDirected();
-    
+    void requestStopCurrentTask();
+    void resetToCircularRepresentation();
+
 public slots:
     void switchToPage(UiPages p);
     void onPositionsUpdated(int iteration, int totalIterations);
     void finishedApplyingForceDirected();
+
 };

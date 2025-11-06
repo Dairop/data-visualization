@@ -3,6 +3,7 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QScrollArea>
 #include <iostream>
 
 #include "UiPages.h"
