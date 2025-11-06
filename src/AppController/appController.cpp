@@ -25,11 +25,11 @@ void AppController::run() {
 
 
 void AppController::onRequestPageChange(UiPages p){
-    mainWindow->switchToPage(p);
-
-    if (p != UiPages::visualize) {
-        core->stopThreads();
+    if (core->isThreadRunning() && p != UiPages::visualize) {
+        core->stopApplyingForceDirected();
     }
+
+    mainWindow->switchToPage(p);
 }
 
 void AppController::onConfirmNewDatasetFileSelected(std::filesystem::path path){

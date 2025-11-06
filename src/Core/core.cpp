@@ -83,6 +83,17 @@ void Core::stopApplyingForceDirected() {
 }
 
 
+bool Core::checkForceDirectedEnd() {
+    if (threadsMustStop.load()) {
+        emit finishedApplyingForceDirected();
+        return true;
+    }
+    return false;
+}
+
+
+
+
 
 void Core::forceDirected(){
     const int NB_ITERATIONS = 3000;
@@ -112,7 +123,7 @@ void Core::forceDirected(){
 
 
     for (unsigned int it = 0; it < NB_ITERATIONS; it++){
-        checkForceDirectedEnd();
+        if (checkForceDirectedEnd()) return;
 
         iterationsProgression = (float) it / (float) NB_ITERATIONS;
 
@@ -224,13 +235,13 @@ void Core::forceDirected(){
         
         if ((it % timeBetweenTwoCollisionChecks) == 0) {
             for (unsigned int i = 0; i < graph->nodesNames.size() / 50; i++) {
-                checkForceDirectedEnd();
+                if (checkForceDirectedEnd()) return;
 
                 collisions(softCollisionsRadius, 0.3f);
             }
 
             for (unsigned int i = 0; i < graph->nodesNames.size() / 50; i++) {
-                checkForceDirectedEnd();
+                if (checkForceDirectedEnd()) return;
 
                 collisions(softCollisionsRadius*0.5f, 0.5f);
             }
@@ -241,7 +252,7 @@ void Core::forceDirected(){
 
     
     for (unsigned int i = 0; i < 20; i++) {
-        checkForceDirectedEnd();
+        if (checkForceDirectedEnd()) return;
 
         collisions(150.0f, 1.0f);
     }
