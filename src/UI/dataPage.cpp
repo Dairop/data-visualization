@@ -81,6 +81,17 @@ DataPage::DataPage(QWidget *parent) : QWidget(parent) {
     background-color: blue;
     }
 
+    QPushButton {
+      color: white;
+
+      height: 4em;
+
+      border-width: 3px;
+      border-color: #7D60D2;
+      border-radius: 5px;
+      border-style: solid;
+    }
+
     )");
 }
 

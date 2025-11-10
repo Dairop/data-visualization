@@ -124,6 +124,10 @@ bool Core::checkForceDirectedEnd() {
 
 
 
+
+
+
+
 void Core::forceDirected(){
     const int NB_ITERATIONS = 3000;
     float iterationsProgression = 0.0f;
@@ -293,8 +297,9 @@ void Core::forceDirected(){
 
 
 
-void Core::collisions(float radius, float force){
-    float queryRadiusNorm = radius; // used when we have rect queries
+
+void Core::collisionsOneThread(float radius, float force){
+    float queryRadiusNorm = radius; // useful when we have rect queries, not used here
 
     graph->quadtree->del();
 
@@ -350,6 +355,142 @@ void Core::collisions(float radius, float force){
         pointsInRange.clear();
     }
 }
+
+
+
+
+
+
+
+
+void collisionsThread(int threadId, int startIndex, int endIndex, 
+                    Graph* graph,
+                    float radius, 
+                    float force,
+                    const std::vector<int>& nodesIds,
+                    std::unordered_map<int, QPointF>& displacements){
+
+
+
+    std::vector<int> nodesInRange;
+    for (unsigned int iteratorNodesIds = startIndex; iteratorNodesIds < endIndex; iteratorNodesIds++){
+        if (iteratorNodesIds > nodesIds.size()) return;
+
+        int nodeId = nodesIds[iteratorNodesIds];
+        QPointF nodePos = graph->nodesPosition[nodeId];
+
+
+        graph->quadtree->queryRangeCircle(nodePos, radius, nodesInRange);    
+        
+
+
+        //if too close, move the nodes
+        for (unsigned int i = 0; i < nodesInRange.size(); i++){
+            if (nodeId >= nodesInRange[i]) continue;
+
+            QPointF start_pos = nodePos;
+            QPointF end_pos = graph->nodesPosition[nodesInRange[i]];
+
+            float d = dist(start_pos, end_pos);
+
+            //avoid dividing by 0
+            if (d < 0.001f){
+                float randomOffset1 = (float) ((i * 7057 + nodeId * 3527) % 51 - 24) * 0.1f;
+                float randomOffset2 = (float) ((i * 4241 - nodeId * 173) % 51 - 24) * 0.1f;
+                end_pos += QPointF(randomOffset1, randomOffset2);
+
+                d = dist(start_pos, end_pos);
+                if (d < 0.001f) continue;
+            }
+
+
+            float dx = start_pos.x() - end_pos.x();
+            float dy = start_pos.y() - end_pos.y();
+            float normX = dx / d;
+            float normY = dy / d;
+
+            float overlapRatio = (radius - d) / radius;
+
+            //applied to each node in opposition
+            float displacementX = normX * overlapRatio * force;
+            float displacementY = normY * overlapRatio * force;
+
+            displacements[nodeId] += QPointF(displacementX * 0.5f, displacementY * 0.5f);
+            displacements[nodesInRange[i]] += QPointF(displacementX * -0.5f, displacementY * -0.5f);
+        }
+
+        nodesInRange.clear();
+    }
+}
+
+
+
+void Core::collisions(float radius, float force){
+    const int nThreads = std::thread::hardware_concurrency() - 2; //minus this and ui
+    if (nThreads <= 0) {
+        collisionsOneThread(radius, force);
+        return;
+    }
+    
+    //displacement of nodes for every thread, values are added at the end if 
+    //they correspond to the same node
+    std::vector<std::unordered_map<int, QPointF>> localDisplacements(nThreads);
+    
+    std::vector<std::thread> collisionsThreads;
+    std::vector<int> nodesIds;
+
+    for (const auto &[id, _] : graph->nodesPosition)
+        nodesIds.push_back(id);
+
+
+    graph->quadtree->del();
+
+    for (const auto &[id, pos] : graph->nodesPosition){
+        graph->quadtree->insert(pos, id);        
+    }
+
+
+    const int numberOfNodes = nodesIds.size();
+    const int nodesPerThread = (numberOfNodes + nThreads - 1) / nThreads;
+
+
+    for (int t = 0; t < nThreads; ++t) {
+        //nodes that the next thread will have to work on
+        int start = t * nodesPerThread;
+        int end = std::min(start + nodesPerThread, numberOfNodes);
+
+        if (start >= numberOfNodes) break;
+
+
+        /*  Parameters:
+            int threadId, int startIndex, int endIndex, 
+            Graph* graph,
+            float radius, 
+            float force,
+            const std::vector<int>& nodesIds,
+            std::unordered_map<int, QPointF>& displacements
+        */
+       //std::ref and std::cref are used because if not std::thread copies the arguments before starting the thread
+        collisionsThreads.push_back(std::thread(collisionsThread, t, start, end, graph, radius, force, std::cref(nodesIds), std::ref(localDisplacements[t])));
+    }
+ 
+    for (auto &t : collisionsThreads){
+        t.join();
+    }
+
+
+
+    for (unsigned int i = 0; i < localDisplacements.size(); i++){
+        for (const auto& [id, delta] : localDisplacements[i]){
+            graph->positionMutex.lock();
+            graph->nodesPosition[id] += delta;
+            graph->positionMutex.unlock();
+        }
+    }
+
+
+}
+
 
 
 

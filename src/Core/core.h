@@ -44,6 +44,7 @@ private slots:
 private:
     void forceDirected();
     void collisions(float radius = 150.0f, float force = 1.0f /*1.0f = solve the collision*/);
+    void collisionsOneThread(float radius = 150.0f, float force = 1.0f /*1.0f = solve the collision*/);
     void keepNodesInsideQuadtree();
     bool checkForceDirectedEnd();
     void joinWorkerIfNeeded();
