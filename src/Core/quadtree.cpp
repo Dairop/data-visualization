@@ -114,6 +114,32 @@ bool Quadtree::queryRangeCircle(const QPointF& center, const float radius, std::
 
 
 
+bool Quadtree::remove(const QPointF& p, int id) {
+    if (!isPointInsideRect(p, quadCenterPosition, quadSize))
+        return false;
+
+
+    auto it = data.find(id);
+    if (it != data.end()) {
+        data.erase(it);
+        return true;
+    }
+
+    //if no children
+    if (!northWest)
+        return false;
+
+    if (northWest->remove(p, id)) return true;
+    if (northEast->remove(p, id)) return true;
+    if (southEast->remove(p, id)) return true;
+    if (southWest->remove(p, id)) return true;
+
+    return false;
+}
+
+
+
+
 
 
 void Quadtree::del() {

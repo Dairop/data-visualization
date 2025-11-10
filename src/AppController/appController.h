@@ -32,4 +32,6 @@ public slots:
     void onFinishedApplyingForceDirected();
     void requestStopCurrentTask();
     void resetToCircularRepresentation();
+    void requestMoveNode(int nodeId, QPointF& newPosition);
+
 };

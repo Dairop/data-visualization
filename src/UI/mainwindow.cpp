@@ -41,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(visualizePage, &VisualizePage::startApplyingForceDirected, this, &MainWindow::startApplyingForceDirected);
     connect(visualizePage, &VisualizePage::requestStopCurrentTask, this, &MainWindow::requestStopCurrentTask);
     connect(visualizePage, &VisualizePage::resetToCircularRepresentation, this, &MainWindow::resetToCircularRepresentation);
+    connect(visualizePage, &VisualizePage::requestMoveNode, this, &MainWindow::requestMoveNode);
 
     stackedWidget->setCurrentWidget(menuPage);
 

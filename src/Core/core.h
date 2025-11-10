@@ -27,6 +27,7 @@ public:
     bool isThreadRunning() { return threadForceDirectedRunning; }
 
     void placePointsInCircle() { graph->placePointsInCircle(); }
+    void moveNode(int nodeId, QPointF& newPos);
     
 signals:
     void datasetLoaded();

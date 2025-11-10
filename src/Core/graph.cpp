@@ -21,6 +21,13 @@ Graph::Graph(const Dataset* d){
 
     for (auto& [id, _] : nodesNames)
         nodesMass[id] = 1.0f + std::sqrtf(nodesMass[id]);
+
+
+    quadtree->del();
+
+    for (const auto &[id, pos] : nodesPosition){
+        quadtree->insert(pos, id);        
+    }
 }
 
 

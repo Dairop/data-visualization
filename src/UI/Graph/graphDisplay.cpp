@@ -10,10 +10,14 @@ GraphDisplay::GraphDisplay(QWidget *parent) :
     setMouseTracking(true);
 
     myGraph = nullptr;
+
+    selectedNode = -1;
 }
 
 void GraphDisplay::loadGraph(Graph* g){
     myGraph = g;
+
+    selectedNode = -1;
 }
 
 
@@ -87,8 +91,6 @@ void GraphDisplay::paintGL() {
     glEnd();
 
 
-    const int nodesHalfSize = 15;
-
     glColor3f(0.2f, 0.6f, 1.0f);
     for (const auto &[id, pos] : myGraph->nodesPosition){
         glBegin(GL_QUADS);
@@ -133,17 +135,46 @@ void GraphDisplay::wheelEvent(QWheelEvent *event) {
 }
 
 
+QPointF screenToWorld(QPointF pos, QPointF& offset, float zoom){
+    pos /= zoom;
+    pos -= offset;
+
+    return pos;
+}
+
+
 
 void GraphDisplay::mousePressEvent(QMouseEvent *event) {
+    if (myGraph == nullptr || myGraph->nodesPosition.size() == 0) return;
+
+    QPointF offset = QPointF(x_offset, y_offset);
+    QPointF worldPos = screenToWorld(event->pos(), offset, zoom);
+
+    std::vector<int> pointsInRange;
+    myGraph->quadtree->queryRangeCircle(worldPos, nodesHalfSize, pointsInRange);
+
+    if (pointsInRange.size() > 0) selectedNode = pointsInRange[0];
+    else selectedNode = -1;
+
     lastMousePos = event->pos();
 }
 
 void GraphDisplay::mouseMoveEvent(QMouseEvent *event) {
     if (event->buttons() & Qt::LeftButton) {
-        QPointF delta = event->pos() - lastMousePos;
-        x_offset += delta.x() / zoom;
-        y_offset += delta.y() / zoom;
-        lastMousePos = event->pos();
+        if (selectedNode >= 0) {
+            QPointF offset = QPointF(x_offset, y_offset);
+            QPointF pos = screenToWorld(event->pos(), offset, zoom);
+
+            emit requestMoveNode(selectedNode, pos);
+        } else {
+            QPointF delta = event->pos() - lastMousePos;
+            x_offset += delta.x() / zoom;
+            y_offset += delta.y() / zoom;
+
+            lastMousePos = event->pos();
+        }
+        
+        
         update();
     }
 }

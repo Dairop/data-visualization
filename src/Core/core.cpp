@@ -88,6 +88,7 @@ void Core::keepNodesInsideQuadtree(){
     float quad_max_x = quad_center_x + graph->quadtree->getQuadSize().x() / 2.0f;
     float quad_max_y = quad_center_y + graph->quadtree->getQuadCenterPos().y() / 2.0f;
 
+    graph->positionMutex.lock();
     for (auto&[id, pos]: graph->nodesPosition){
         if (pos.x() < quad_min_x) pos.setX(quad_min_x);
         else if (pos.x() > quad_max_x) pos.setX(quad_max_x);
@@ -95,6 +96,8 @@ void Core::keepNodesInsideQuadtree(){
         if (pos.y() < quad_min_y) pos.setY(quad_min_y);
         else if (pos.y() > quad_max_y) pos.setY(quad_max_y);
     }
+    graph->positionMutex.unlock();
+
 }
 
 
@@ -496,4 +499,20 @@ void Core::collisions(float radius, float force){
 
 void Core::onFinishedApplyingForceDirected() {
     joinWorkerIfNeeded();
+}
+
+
+void Core::moveNode(int nodeId, QPointF& newPos){
+    if (graph == nullptr) return;
+    if (!graph->nodesNames.count(nodeId)) return;
+
+    graph->positionMutex.lock();
+
+    if (graph->quadtree->remove(graph->nodesPosition[nodeId], nodeId)){
+        std::cout << "test";
+    }
+    graph->nodesPosition[nodeId] = newPos;
+    graph->quadtree->insert(newPos, nodeId);
+
+    graph->positionMutex.unlock();
 }

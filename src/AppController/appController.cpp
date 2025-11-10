@@ -10,6 +10,7 @@ AppController::AppController(QObject *parent): QObject(parent) {
     connect(mainWindow, &MainWindow::startApplyingForceDirected, this, &AppController::startApplyingForceDirected);
     connect(mainWindow, &MainWindow::requestStopCurrentTask, this, &AppController::requestStopCurrentTask);
     connect(mainWindow, &MainWindow::resetToCircularRepresentation, this, &AppController::resetToCircularRepresentation);
+    connect(mainWindow, &MainWindow::requestMoveNode, this, &AppController::requestMoveNode);
 
     connect(core, &Core::datasetGenerated, this, &AppController::onDatasetLoaded);
     connect(core, &Core::datasetLoaded, this, &AppController::onDatasetLoaded);
@@ -74,4 +75,9 @@ void AppController::requestStopCurrentTask(){
 void AppController::resetToCircularRepresentation(){
     requestStopCurrentTask();
     core->placePointsInCircle();
+}
+
+
+void AppController::requestMoveNode(int nodeId, QPointF& newPosition){
+    core->moveNode(nodeId, newPosition);
 }

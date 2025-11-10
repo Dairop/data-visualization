@@ -25,7 +25,11 @@ private:
     int glSizeX;
     int glSizeY;
 
+    const int nodesHalfSize = 15;
+
     QPointF lastMousePos;
+
+    int selectedNode;
 
 public:
     GraphDisplay(QWidget *parent = nullptr);
@@ -43,5 +47,8 @@ protected:
 
 private:
     void updateCameraPos();
+
+signals:
+    void requestMoveNode(int nodeId, QPointF& newPosition);
 
 };

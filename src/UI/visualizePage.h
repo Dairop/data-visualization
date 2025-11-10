@@ -32,7 +32,8 @@ signals:
     void resetToCircularRepresentation();
     void startApplyingForceDirected();
     void requestStopCurrentTask();
-    
+    void requestMoveNode(int nodeId, QPointF& newPosition);
+
 public slots: 
     void onPositionsUpdated(int iteration, int totalIterations);
 

@@ -39,6 +39,7 @@ signals:
     void startApplyingForceDirected();
     void requestStopCurrentTask();
     void resetToCircularRepresentation();
+    void requestMoveNode(int nodeId, QPointF& newPosition);
 
 public slots:
     void switchToPage(UiPages p);

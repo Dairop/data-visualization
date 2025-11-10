@@ -57,6 +57,9 @@ VisualizePage::VisualizePage(QWidget *parent) : QWidget(parent) {
 
     setLayout(layout);
 
+
+    connect(mainCanvas, &GraphDisplay::requestMoveNode, this, &VisualizePage::requestMoveNode);
+
 }
 
 void VisualizePage::loadGraph(Graph* d) {

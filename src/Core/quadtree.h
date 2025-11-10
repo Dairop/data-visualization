@@ -34,6 +34,7 @@ public:
     bool insert(QPointF p, int id);
     bool queryRangeRect(const QPointF& center, const QPointF& size, std::vector<int>& pointsInRange);
     bool queryRangeCircle(const QPointF& center, const float radius, std::vector<int>& pointsInRange);
+    bool remove(const QPointF& pos, int id);
 
     void del();
 
