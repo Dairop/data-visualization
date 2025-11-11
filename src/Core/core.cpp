@@ -499,20 +499,20 @@ void Core::collisions(float radius, float force){
 
 void Core::onFinishedApplyingForceDirected() {
     joinWorkerIfNeeded();
+    threadForceDirectedRunning.store(false);
 }
 
 
 void Core::moveNode(int nodeId, QPointF& newPos){
-    if (graph == nullptr) return;
+    if (threadForceDirectedRunning.load() || graph == nullptr) return;
     if (!graph->nodesNames.count(nodeId)) return;
 
     graph->positionMutex.lock();
 
     if (graph->quadtree->remove(graph->nodesPosition[nodeId], nodeId)){
-        std::cout << "test";
+        graph->nodesPosition[nodeId] = newPos;
+        graph->quadtree->insert(newPos, nodeId);
     }
-    graph->nodesPosition[nodeId] = newPos;
-    graph->quadtree->insert(newPos, nodeId);
 
     graph->positionMutex.unlock();
 }

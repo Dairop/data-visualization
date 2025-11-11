@@ -1,8 +1,8 @@
 #pragma once
-#include <QString>
 #include "dataset.h"
 #include "graph.h"
 
+#include <QString>
 #include <filesystem>
 #include <QObject>
 #include <thread>
@@ -28,7 +28,7 @@ public:
 
     void placePointsInCircle() { graph->placePointsInCircle(); }
     void moveNode(int nodeId, QPointF& newPos);
-    
+
 signals:
     void datasetLoaded();
     void datasetGenerated();

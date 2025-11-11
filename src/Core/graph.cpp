@@ -4,11 +4,12 @@ Graph::Graph(const Dataset* d){
     this->nodesNames = d->nodesNames;
     this->edges = d->edges;
 
-    environmentSize = QPointF(450000, 450000);
+    float r = std::sqrt(d->nodesNames.size()) * 200.f;
+    environmentSize = QPointF(r * 2.5f, r * 2.5f);
+
+    quadtree = new Quadtree(QPointF(0.0f, 0.0f), environmentSize);
 
     placePointsInCircle();
-
-    quadtree = new Quadtree(QPointF(0, 0), environmentSize);
 
     for (const auto& [idStart, vectEnds]: edges) {
         nodesMass[idStart] += edges[idStart].size(); //node
@@ -21,13 +22,6 @@ Graph::Graph(const Dataset* d){
 
     for (auto& [id, _] : nodesNames)
         nodesMass[id] = 1.0f + std::sqrtf(nodesMass[id]);
-
-
-    quadtree->del();
-
-    for (const auto &[id, pos] : nodesPosition){
-        quadtree->insert(pos, id);        
-    }
 }
 
 
@@ -50,5 +44,10 @@ void Graph::placePointsInCircle() {
         i++;
     }
 
-    environmentSize = QPointF(radius * 2.5f, radius * 2.5f);
+    if (quadtree == nullptr) quadtree = new Quadtree(QPointF(0.0f, 0.0f), environmentSize);
+    quadtree->del();
+
+    for (const auto &[id, pos] : nodesPosition){
+        quadtree->insert(pos, id);        
+    }
 }

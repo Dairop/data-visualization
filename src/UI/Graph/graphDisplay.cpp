@@ -165,6 +165,18 @@ void GraphDisplay::mouseMoveEvent(QMouseEvent *event) {
             QPointF offset = QPointF(x_offset, y_offset);
             QPointF pos = screenToWorld(event->pos(), offset, zoom);
 
+            if (pos.x() > myGraph->quadtree->getQuadCenterPos().x() + myGraph->quadtree->getQuadSize().x() / 2.0f){
+                pos.setX(myGraph->quadtree->getQuadCenterPos().x() + myGraph->quadtree->getQuadSize().x() / 2.0f);
+            } else if (pos.x() < myGraph->quadtree->getQuadCenterPos().x() - myGraph->quadtree->getQuadSize().x() / 2.0f){
+                pos.setX(myGraph->quadtree->getQuadCenterPos().x() - myGraph->quadtree->getQuadSize().x() / 2.0f);
+            }
+
+            if (pos.y() > myGraph->quadtree->getQuadCenterPos().y() + myGraph->quadtree->getQuadSize().y() / 2.0f){
+                pos.setY(myGraph->quadtree->getQuadCenterPos().y() + myGraph->quadtree->getQuadSize().y() / 2.0f);
+            } else if (pos.y() < myGraph->quadtree->getQuadCenterPos().y() - myGraph->quadtree->getQuadSize().y() / 2.0f){
+                pos.setY(myGraph->quadtree->getQuadCenterPos().y() - myGraph->quadtree->getQuadSize().y() / 2.0f);
+            }
+
             emit requestMoveNode(selectedNode, pos);
         } else {
             QPointF delta = event->pos() - lastMousePos;
