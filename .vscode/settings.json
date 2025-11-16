@@ -89,6 +89,7 @@
         "qscrollarea": "cpp",
         "random": "cpp",
         "qopenglfunctions": "cpp",
-        "qopenglwidget": "cpp"
+        "qopenglwidget": "cpp",
+        "fstream": "cpp"
     }
 }

@@ -5,7 +5,7 @@ AppController::AppController(QObject *parent): QObject(parent) {
     core = new Core();
 
     connect(mainWindow, &MainWindow::requestPageChange, this, &AppController::onRequestPageChange);
-    //connect(mainWindow, &MainWindow::confirmNewDatasetFileSelected, this, &AppController::onConfirmNewDatasetFileSelected);
+    connect(mainWindow, &MainWindow::confirmNewDatasetFileSelected, this, &AppController::onConfirmNewDatasetFileSelected);
     connect(mainWindow, &MainWindow::generateNewDataset, this, &AppController::onGenerateNewDataset);
     connect(mainWindow, &MainWindow::startApplyingForceDirected, this, &AppController::startApplyingForceDirected);
     connect(mainWindow, &MainWindow::requestStopCurrentTask, this, &AppController::requestStopCurrentTask);

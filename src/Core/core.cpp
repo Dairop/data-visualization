@@ -18,8 +18,8 @@ Core::~Core() {
 void Core::setNewDatasetPath(std::filesystem::path path){
     datasetPath = path;
 
-    //load
-    //...
+    dataset.loadFromFile(path);
+    graph = new Graph(&dataset);
 
     emit datasetLoaded();
 }
